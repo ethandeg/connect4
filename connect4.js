@@ -81,7 +81,7 @@ function placeInTable(y, x) {
 		currPlayer = 1;
 	}
 	const spot = document.getElementById(`${y}-${x}`);
-	spot.append(piece);
+	spot.append(newPiece);
 	//create div
 	//have a counter to know who is current player
 	// TODO: make a div and insert into correct table cell
