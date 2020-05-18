@@ -17,14 +17,9 @@ let board = []; // array of rows, each row is array of cells  (board[y][x])
 
 function makeBoard() {
 	// TODO: set "board" to empty HEIGHT x WIDTH matrix array
-	board = [
-		[ null, null, null, null, null, null, null ],
-		[ null, null, null, null, null, null, null ],
-		[ null, null, null, null, null, null, null ],
-		[ null, null, null, null, null, null, null ],
-		[ null, null, null, null, null, null, null ],
-		[ null, null, null, null, null, null, null ]
-	];
+	for (let y = 0; y < HEIGHT; y++) {
+		board.push(Array.from({ length: WIDTH }));
+	}
 }
 
 /** makeHtmlBoard: make HTML table and row of column tops. */
@@ -45,9 +40,9 @@ function makeHtmlBoard() {
 	htmlBoard.append(top);
 
 	// TODO: add comment for this code
-	for (var y = 0; y < HEIGHT; y++) {
+	for (let y = 0; y < HEIGHT; y++) {
 		const row = document.createElement('tr');
-		for (var x = 0; x < WIDTH; x++) {
+		for (let x = 0; x < WIDTH; x++) {
 			const cell = document.createElement('td');
 			cell.setAttribute('id', `${y}-${x}`);
 			row.append(cell);
@@ -84,7 +79,9 @@ function placeInTable(y, x) {
 /** endGame: announce game end */
 
 function endGame(msg) {
-	alert(msg);
+	setTimeout(function() {
+		alert(msg);
+	}, 150);
 }
 
 /** handleClick: handle click of column top to play piece */
@@ -104,12 +101,14 @@ function handleClick(evt) {
 	board[y][x] = currPlayer;
 	placeInTable(y, x);
 
-	currPlayer = currPlayer === 1 ? 2 : 1;
-
 	// check for win
 	if (checkForWin()) {
 		return endGame(`Player ${currPlayer} won!`);
 	}
+	if (board.every((row) => row.every((cell) => cell))) {
+		return endGame('Cat Game!');
+	}
+	currPlayer = currPlayer === 1 ? 2 : 1;
 
 	// check for tie
 	// TODO: check if all cells in board are filled; if so call, call endGame
@@ -126,17 +125,22 @@ function checkForWin() {
 		//  - cells: list of four (y, x) cells
 		//  - returns true if all are legal coordinates & all match currPlayer
 
+		//makes sure cells match current player
+
 		return cells.every(([ y, x ]) => y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH && board[y][x] === currPlayer);
 	}
 
 	// TODO: read and understand this code. Add comments to help you.
-
-	for (var y = 0; y < HEIGHT; y++) {
-		for (var x = 0; x < WIDTH; x++) {
-			var horiz = [ [ y, x ], [ y, x + 1 ], [ y, x + 2 ], [ y, x + 3 ] ];
-			var vert = [ [ y, x ], [ y + 1, x ], [ y + 2, x ], [ y + 3, x ] ];
-			var diagDR = [ [ y, x ], [ y + 1, x + 1 ], [ y + 2, x + 2 ], [ y + 3, x + 3 ] ];
-			var diagDL = [ [ y, x ], [ y + 1, x - 1 ], [ y + 2, x - 2 ], [ y + 3, x - 3 ] ];
+	//loop through the game board
+	for (let y = 0; y < HEIGHT; y++) {
+		for (let x = 0; x < WIDTH; x++) {
+			// check each square and move horizontally by 1 to check if there is a line
+			const horiz = [ [ y, x ], [ y, x + 1 ], [ y, x + 2 ], [ y, x + 3 ] ];
+			//same thing vertically
+			const vert = [ [ y, x ], [ y + 1, x ], [ y + 2, x ], [ y + 3, x ] ];
+			//diagonally
+			const diagDR = [ [ y, x ], [ y + 1, x + 1 ], [ y + 2, x + 2 ], [ y + 3, x + 3 ] ];
+			const diagDL = [ [ y, x ], [ y + 1, x - 1 ], [ y + 2, x - 2 ], [ y + 3, x - 3 ] ];
 
 			if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
 				return true;
