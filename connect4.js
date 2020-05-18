@@ -9,7 +9,7 @@ let WIDTH = 7;
 let HEIGHT = 6;
 
 let currPlayer = 1; // active player: 1 or 2
-const board = []; // array of rows, each row is array of cells  (board[y][x])
+let board = []; // array of rows, each row is array of cells  (board[y][x])
 
 /** makeBoard: create in-JS board structure:
  *    board = array of rows, each row is array of cells  (board[y][x])
@@ -17,7 +17,7 @@ const board = []; // array of rows, each row is array of cells  (board[y][x])
 
 function makeBoard() {
 	// TODO: set "board" to empty HEIGHT x WIDTH matrix array
-	const board = [
+	board = [
 		[ null, null, null, null, null, null, null ],
 		[ null, null, null, null, null, null, null ],
 		[ null, null, null, null, null, null, null ],
@@ -60,7 +60,7 @@ function makeHtmlBoard() {
 
 function findSpotForCol(x) {
 	// TODO: write the real version of this, rather than always returning 0
-	for (let y = HEIGHT; y > 0; y--) {
+	for (let y = HEIGHT - 1; y >= 0; y--) {
 		if (!board[y][x]) {
 			return y;
 		}
@@ -73,13 +73,7 @@ function findSpotForCol(x) {
 function placeInTable(y, x) {
 	const newPiece = document.createElement('div');
 	newPiece.classList.add('piece');
-	if (currPlayer === 1) {
-		newPiece.classList.add('p1Piece');
-		currPlayer = 2;
-	} else {
-		newPiece.classList.add('p2Piece');
-		currPlayer = 1;
-	}
+	newPiece.classList.add(`p${currPlayer}Piece`);
 	const spot = document.getElementById(`${y}-${x}`);
 	spot.append(newPiece);
 	//create div
@@ -90,7 +84,7 @@ function placeInTable(y, x) {
 /** endGame: announce game end */
 
 function endGame(msg) {
-	// TODO: pop up alert message
+	alert(msg);
 }
 
 /** handleClick: handle click of column top to play piece */
@@ -109,6 +103,8 @@ function handleClick(evt) {
 	// TODO: add line to update in-memory board
 	board[y][x] = currPlayer;
 	placeInTable(y, x);
+
+	currPlayer = currPlayer === 1 ? 2 : 1;
 
 	// check for win
 	if (checkForWin()) {
