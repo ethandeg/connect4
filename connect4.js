@@ -60,22 +60,28 @@ function makeHtmlBoard() {
 
 function findSpotForCol(x) {
 	// TODO: write the real version of this, rather than always returning 0
-	return 0;
+	for (let y = HEIGHT; y > 0; y--) {
+		if (!board[y][x]) {
+			return y;
+		}
+	}
+	return null;
 }
 
 /** placeInTable: update DOM to place piece into HTML table of board */
 
 function placeInTable(y, x) {
-	let p1 = true;
-	let newPiece = document.createElement('div');
+	const newPiece = document.createElement('div');
 	newPiece.classList.add('piece');
-	if (p1) {
+	if (currPlayer === 1) {
 		newPiece.classList.add('p1Piece');
-		p1 = false;
+		currPlayer = 2;
 	} else {
 		newPiece.classList.add('p2Piece');
-		p1 = true;
+		currPlayer = 1;
 	}
+	const spot = document.getElementById(`${y}-${x}`);
+	spot.append(piece);
 	//create div
 	//have a counter to know who is current player
 	// TODO: make a div and insert into correct table cell
@@ -91,16 +97,17 @@ function endGame(msg) {
 
 function handleClick(evt) {
 	// get x from ID of clicked cell
-	var x = +evt.target.id;
+	const x = +evt.target.id;
 
 	// get next spot in column (if none, ignore click)
-	var y = findSpotForCol(x);
+	const y = findSpotForCol(x);
 	if (y === null) {
 		return;
 	}
 
 	// place piece in board and add to HTML table
 	// TODO: add line to update in-memory board
+	board[y][x] = currPlayer;
 	placeInTable(y, x);
 
 	// check for win
